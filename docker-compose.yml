@@ -1,0 +1,64 @@
+version: '3'
+
+services:
+  rmq:
+    image: 'rabbitmq:latest'
+    restart: always
+    hostname: 'supershare-rabbitmq'
+    container_name: 'rabbitmq'
+    environment:
+      RABBITMQ_DEFAULT_USER: 'admin'
+      RABBITMQ_DEFAULT_PASS: '"nimda'
+    ports:
+      - '15672:15672'
+      - '5672:5672'
+    volumes:
+      - .docker/rabbitmq/conf/enabled_plugins:/etc/rabbitmq/enabled_plugins
+      - .docker/rabbitmq:/var/lib/rabbitmq
+
+  mysql:
+    image: mysql:5.7
+    restart: always
+    hostname: 'supershare-mysql'
+    container_name: 'mysql'
+    environment:
+      MYSQL_DATABASE: 'supershare'
+      MYSQL_USER: 'admin'
+      MYSQL_PASSWORD: 'nimda'
+      MYSQL_ROOT_PASSWORD: 'SuperDuperRootAccess!0'
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    command: --init-file /data/application/init.sql
+    volumes:
+      - ss-mysql:/var/lib/mysql
+      - .docker/mysql/init.sql:/data/application/init.sql
+ 
+  core:
+    build: 
+      dockerfile: docker/Dockerfile
+      context: ss-core/
+    restart: always
+    hostname: 'supershare-core'
+    container_name: 'core'
+    ports:
+      - '8080:8080'
+    depends_on:
+      - mysql
+      - rmq
+  
+  front:
+    build:
+      dockerfile: docker/Dockerfile
+      context: ss-front/
+    restart: always
+    hostname: 'supershare-front'
+    container_name: 'front'
+    ports:
+      - '3000:3000'
+    depends_on:
+      - core
+
+volumes:
+  ss-mysql:

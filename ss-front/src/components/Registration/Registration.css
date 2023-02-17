@@ -1,0 +1,22 @@
+.container {
+    margin-top: 10vh;
+    width: 50vw;
+    height: 50vh;
+    background-color: #fff;
+    padding: 3vw;
+    border-radius: 5px;
+}
+
+.form-control {
+    height: 6vh;
+    border-radius: 0.5px;
+    border-width: 3pt;
+}
+
+.btn-primary {
+    border-radius: 0;
+}
+
+.btn-block {
+    border-radius: 0;
+}
