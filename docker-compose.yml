@@ -33,10 +33,10 @@ services:
     hostname: 'supershare-mysql'
     container_name: 'mysql'
     environment:
-      MYSQL_DATABASE: 'supershare'
-      MYSQL_USER: 'admin'
-      MYSQL_PASSWORD: 'nimda'
-      MYSQL_ROOT_PASSWORD: 'SuperDuperRootAccess!0'
+      MYSQL_DATABASE: ${APP_MYSQL_DATABASE}
+      MYSQL_USER: ${APP_MYSQL_USER}
+      MYSQL_PASSWORD: ${APP_MYSQL_PASS}
+      MYSQL_ROOT_PASSWORD: ${APP_MYSQL_ROOT_PSW}
     ports:
       - '3306:3306'
     expose:
@@ -57,14 +57,14 @@ services:
     hostname: 'supershare-core'
     container_name: 'core'
     ports:
-      - '8080:8080'
+      - '${APP_CORE_PORT}:${APP_CORE_PORT}'
     networks:
       supernet:
         ipv4_address: ${APP_CORE_IP}
     depends_on:
       - mysql
       - rmq
-  
+
   front:
     build:
       context: ss-front/
@@ -72,8 +72,10 @@ services:
     restart: always
     hostname: 'supershare-front'
     container_name: 'front'
+    environment:
+        APP_PORT: ${APP_FRONT_PORT}
     ports:
-      - '3000:3000'
+      - '${APP_FRONT_PORT}:${APP_FRONT_PORT}'
     networks:
       supernet:
         ipv4_address: ${APP_FRONT_IP}

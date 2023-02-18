@@ -1,13 +1,14 @@
 FROM node:lts-alpine
 
+ENV APP_PORT 3000
 WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY tsconfig.json ./
 COPY src/ ./src/
-COPY build/ ./public
+COPY public/ ./public
 RUN npm ci
-#RUN npm run build
+RUN npm i -g serve
 
-EXPOSE 3000
-CMD [ "npm", "start" ]
+EXPOSE ${APP_PORT}
+CMD [ "/bin/sh", "-c", "npm run build && serve -s build -l ${APP_PORT}" ]
