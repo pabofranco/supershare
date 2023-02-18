@@ -1,5 +1,13 @@
 version: '3'
 
+networks:
+  supernet:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: ${APP_NETWORK_SUBNET}
+
 services:
   rmq:
     image: 'rabbitmq:latest'
@@ -15,6 +23,9 @@ services:
     volumes:
       - .docker/rabbitmq/conf/enabled_plugins:/etc/rabbitmq/enabled_plugins
       - .docker/rabbitmq:/var/lib/rabbitmq
+    networks:
+      supernet:
+        ipv4_address: ${APP_RABBITMQ_IP}
 
   mysql:
     image: mysql:5.7
@@ -34,6 +45,9 @@ services:
     volumes:
       - ss-mysql:/var/lib/mysql
       - .docker/mysql/init.sql:/data/application/init.sql
+    networks:
+      supernet:
+        ipv4_address: ${APP_MYSQL_IP}
  
   core:
     build: 
@@ -44,6 +58,9 @@ services:
     container_name: 'core'
     ports:
       - '8080:8080'
+    networks:
+      supernet:
+        ipv4_address: ${APP_CORE_IP}
     depends_on:
       - mysql
       - rmq
@@ -57,6 +74,9 @@ services:
     container_name: 'front'
     ports:
       - '3000:3000'
+    networks:
+      supernet:
+        ipv4_address: ${APP_FRONT_IP}
     depends_on:
       - core
 
