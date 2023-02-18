@@ -37,8 +37,8 @@ services:
  
   core:
     build: 
-      dockerfile: docker/Dockerfile
       context: ss-core/
+      dockerfile: .docker/Dockerfile
     restart: always
     hostname: 'supershare-core'
     container_name: 'core'
@@ -50,8 +50,8 @@ services:
   
   front:
     build:
-      dockerfile: docker/Dockerfile
       context: ss-front/
+      dockerfile: .docker/Dockerfile
     restart: always
     hostname: 'supershare-front'
     container_name: 'front'

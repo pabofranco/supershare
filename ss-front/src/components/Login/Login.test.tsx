@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
-import Login from './Login';
+import { LoginTemplate } from './LoginTemplate';
 
 test('should contain e-mail input', () => {
-  render(<Login />);
+  render(<LoginTemplate />);
   const emailElement = screen.getByPlaceholderText(/E-mail/i);
   expect(emailElement).toBeInTheDocument();
 });
