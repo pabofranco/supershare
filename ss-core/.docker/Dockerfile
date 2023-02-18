@@ -4,7 +4,7 @@ WORKDIR /usr/src/app
 
 COPY package*.json ./
 COPY src/ ./src/
-RUN npm ci
+RUN npm ci --only=production
 
 EXPOSE 8080
 CMD [ "npm", "start" ]
