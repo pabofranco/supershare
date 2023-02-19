@@ -1,10 +1,12 @@
 import express, { Express } from 'express';
-const bparser = require('body-parser');
-const cors = require('cors');
-const { server } = require('./config/Settings.json');
+import { json } from 'body-parser';
+import cors from 'cors';
+import { server } from './config/Settings.json';
+import { dbHelper } from './helpers/dbHelper';
+import { logger } from './helpers/logger';
 
 const configureServer = (): void => {
-    superShare.use(bparser.json());
+    superShare.use(json());
     superShare.use(cors());
 };
 
@@ -21,6 +23,7 @@ const configureRoutes = (): void => {
 const startServer = (): void => {
     const { host, port } = server;
 
+    // server configuration
     configureServer();    
     configureRoutes();
    
@@ -29,5 +32,10 @@ const startServer = (): void => {
     });
 };
 
+// init helpers
+dbHelper.init();
+logger.init();
+
+// start server
 const superShare: Express = express();
 startServer();

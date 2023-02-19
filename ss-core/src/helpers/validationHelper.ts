@@ -1,25 +1,27 @@
 import { IauthParams } from '../interfaces/IauthParams';
 import { IregisterParams } from '../interfaces/IregisterParams';
-import { IvalidationResult } from '../interfaces/IvalidationResult';
+import { Iresult } from '../interfaces/Iresult';
 
-export const validateAuthParams = ({ username, password }: IauthParams): IvalidationResult => {
-    let error = false;
-    let message = null;
 
-    if (!username) { // add regex validation
-        error = true;
-        message = 'Invalid e-mail provided';
-    }
+export const validationHelper = {
+    validateAuthParams: ({ username, password }: IauthParams): Iresult => {
+        let error = false;
+        let message = null;
+    
+        if (!username) { // add regex validation
+            error = true;
+            message = 'Invalid e-mail provided';
+        }
+    
+        if (!password) {
+            error = true;
+            message = 'Password cannot be empty';
+        }
+    
+        return { error, message };
+    },
 
-    if (!password) {
-        error = true;
-        message = 'Password cannot be empty';
-    }
-
-    return { error, message };
-};
-
-export const validateRegisterParams = ({ username, email, password, confirmation }: IregisterParams): IvalidationResult => {
+    validateRegisterParams: ({ username, email, password, confirmation }: IregisterParams): Iresult => {
         let error = false;
         let message = 'User registration was successful';
 
@@ -44,4 +46,5 @@ export const validateRegisterParams = ({ username, email, password, confirmation
         }
         
         return { error, message };
+    },
 };

@@ -1,6 +1,8 @@
 import { randomUUID } from 'crypto';
 import { Router, Request, Response } from 'express';
-import { validateAuthParams, validateRegisterParams } from '../helpers/validationHelper';
+import { validationHelper } from '../helpers/validationHelper';
+import { authController } from '../controllers/authController';
+import { IregisterParams } from '../interfaces/IregisterParams';
 
 const router = Router();
 
@@ -27,7 +29,7 @@ const router = Router();
 
 router.post('/auth', async (req: Request, res: Response): Promise<Response> => {
     // parameters validation
-    const { error, message } = validateAuthParams(req.body);
+    const { error, message } = validationHelper.validateAuthParams(req.body);
     if (error) return res.status(400).json(message);
 
     try {
@@ -42,15 +44,25 @@ router.post('/auth', async (req: Request, res: Response): Promise<Response> => {
 
 router.post('/register', async (req: Request, res: Response): Promise<Response> => {
     // parameters validation
-    const { error, message } = validateRegisterParams(req.body);
+    const { error, message } = validationHelper.validateRegisterParams(req.body);
     if (error) return res.status(400).json(message);
 
     try {
-        const { username, email, password, confirmation } = req.body;
-        return res.status(200).json(message);
+        const userData = req.body as IregisterParams;
+        const newUser = await authController.addUser(userData);
+
+        if (newUser.error) {
+            return res.status(500).json(newUser.data);
+        }
+
+        return res.status(200).json(newUser.data);
     } catch (ex) {
         return res.status(500).json(ex);
     }
+});
+
+router.post('/recovery', async (req: Request, res: Response): Promise<Response> => {
+    return res.status(200).json({ status: 'ok' });
 });
 
 

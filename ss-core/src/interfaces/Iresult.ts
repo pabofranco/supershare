@@ -1,4 +1,4 @@
-export interface IvalidationResult {
+export interface Iresult {
     error: boolean,
     message: string | null
 }
