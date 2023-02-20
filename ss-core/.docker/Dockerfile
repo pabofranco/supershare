@@ -3,7 +3,8 @@ FROM node:lts-alpine
 WORKDIR /usr/src/app
 
 COPY package*.json ./
-COPY src/ ./src/
+COPY dist/ ./dist/
+
 RUN npm ci --only=production
 
 EXPOSE 8080

@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto_1 = require("crypto");
 const express_1 = require("express");
 const validationHelper_1 = require("../helpers/validationHelper");
+const authController_1 = require("../controllers/authController");
 const router = (0, express_1.Router)();
 /* Auth Process
  *
@@ -35,7 +36,7 @@ const router = (0, express_1.Router)();
 */
 router.post('/auth', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // parameters validation
-    const { error, message } = (0, validationHelper_1.validateAuthParams)(req.body);
+    const { error, message } = validationHelper_1.validationHelper.validateAuthParams(req.body);
     if (error)
         return res.status(400).json(message);
     try {
@@ -49,16 +50,23 @@ router.post('/auth', (req, res) => __awaiter(void 0, void 0, void 0, function* (
 }));
 router.post('/register', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // parameters validation
-    const { error, message } = (0, validationHelper_1.validateRegisterParams)(req.body);
+    const { error, message } = validationHelper_1.validationHelper.validateRegisterParams(req.body);
     if (error)
         return res.status(400).json(message);
     try {
-        const { username, email, password, confirmation } = req.body;
-        return res.status(200).json(message);
+        const userData = req.body;
+        const newUser = yield authController_1.authController.addUser(userData);
+        if (newUser.error) {
+            return res.status(500).json(newUser.data);
+        }
+        return res.status(200).json(newUser.data);
     }
     catch (ex) {
         return res.status(500).json(ex);
     }
+}));
+router.post('/recovery', (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    return res.status(200).json({ status: 'ok' });
 }));
 module.exports = router;
 //# sourceMappingURL=auth.js.map

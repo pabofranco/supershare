@@ -16,7 +16,7 @@ services:
     container_name: 'rabbitmq'
     environment:
       RABBITMQ_DEFAULT_USER: 'admin'
-      RABBITMQ_DEFAULT_PASS: '"nimda'
+      RABBITMQ_DEFAULT_PASS: 'nimda'
     ports:
       - '15672:15672'
       - '5672:5672'

@@ -4,7 +4,9 @@
   "description": "Simple software to share links and text files between devices",
   "main": "index.js",
   "scripts": {
-    "start": "docker-compose up --build",
+    "build-front": "cd ss-front && \"$npm_execpath\" run build && cd ..",
+    "build-core": "cd ss-core && \"$npm_execpath\" run build && cd ..",
+    "start": "npm run build-front && npm run build-core && docker-compose up --build",
     "start-bg": "docker-compose up --build -d",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
