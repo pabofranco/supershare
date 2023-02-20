@@ -1,9 +1,10 @@
 import { Router } from 'express';
 import { Icontroller } from './Icontroller';
+import { IdataController } from './IdataController';
 
-export interface Irouter {
+export interface Irouter<T = unknown> {
     path: string,
     router: Router,
-    controller: Icontroller,
+    controller: IdataController<T> | Icontroller,
     configureRoutes(): void,
 }

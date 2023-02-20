@@ -2,22 +2,21 @@ import { IauthParams } from '../interfaces/IauthParams';
 import { IregisterParams } from '../interfaces/IregisterParams';
 import { Iresult } from '../interfaces/Iresult';
 
-
 export const validationHelper = {
     validateAuthParams: ({ username, password }: IauthParams): Iresult => {
         let error = false;
-        let message = null;
-    
+        let message = undefined;
+
         if (!username) { // add regex validation
             error = true;
             message = 'Invalid e-mail provided';
         }
-    
+
         if (!password) {
             error = true;
             message = 'Password cannot be empty';
         }
-    
+
         return { error, message };
     },
 
@@ -44,7 +43,7 @@ export const validationHelper = {
             error = true;
             message = 'Password does not match with confirmation';
         }
-        
+
         return { error, message };
     },
 };

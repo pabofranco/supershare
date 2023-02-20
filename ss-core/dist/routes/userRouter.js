@@ -23,6 +23,7 @@ class UserRouter {
     }
     configureRoutes() {
         this.router.post(this.path, this.insertUser);
+        this.router.delete(this.path, this.deleteUser);
     }
     insertUser(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
@@ -33,11 +34,29 @@ class UserRouter {
             }
             try {
                 const userData = request.body;
-                const newUser = yield this.controller.addUser(userData);
+                const newUser = yield this.controller.insert(userData);
                 if (newUser.error) {
                     return response.status(500).json(newUser.data);
                 }
                 return response.status(200).json(newUser.data);
+            }
+            catch (ex) {
+                return response.status(500).json(ex);
+            }
+        });
+    }
+    deleteUser(request, response) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { id } = request.params;
+            if (!id) {
+                return response.status(400).json({ error: true, message: 'Invalid Id provided' });
+            }
+            try {
+                const { error, data } = yield this.controller.remove({ id });
+                if (error) {
+                    return response.status(500).json({ error, message: data });
+                }
+                return response.status(200).json({ error, message: data });
             }
             catch (ex) {
                 return response.status(500).json(ex);

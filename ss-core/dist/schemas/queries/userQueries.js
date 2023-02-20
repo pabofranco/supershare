@@ -2,13 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userQueries = void 0;
 const tables_1 = require("../tables");
-const usersTable = tables_1.tables.users;
+const users = tables_1.tables.users;
+const salts = tables_1.tables.salts;
 exports.userQueries = {
-    INSERT: `INSERT INTO ${usersTable} (id, username, email, password, queue) VALUES (?, ?, ?, ?, ?)`,
-    UPDATE_EMAIL: `UPDATE TABLE ${usersTable} SET email = ? WHERE id = ?`,
-    UPDATE_PASSWORD: `UPDATE TABLE ${usersTable} SET password = ? WHERE id = ?`,
-    LIST: `SELECT * FROM ${usersTable} ORDER BY id`,
-    GET: `SELECT * FROM ${usersTable} WHERE id = ?`,
-    DELETE: `DELETE FROM ${usersTable} WHERE id = ?`,
+    INSERT: `INSERT INTO ${users} (id, username, email, password, queue) VALUES (?, ?, ?, ?, ?); INSERT INTO ${salts} (id, salt, user_id) VALUES (?, ?, ?)`,
+    UPDATE_EMAIL: `UPDATE TABLE ${users} SET email = ? WHERE id = ?`,
+    UPDATE_PASSWORD: `UPDATE TABLE ${users} SET password = ? WHERE id = ?; UPDATE TABLE ${salts} SET salt = ? WHERE id = ?`,
+    LIST: `SELECT * FROM ${users} ORDER BY id`,
+    GET: `SELECT * FROM ${users} WHERE id = ?`,
+    DELETE: `DELETE FROM ${users} WHERE id = ? DELETE FROM ${salts} WHERE user_id = ?`,
 };
 //# sourceMappingURL=userQueries.js.map

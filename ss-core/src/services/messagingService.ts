@@ -1,47 +1,74 @@
-import { Connection, Channel, connect, Message, ConsumeMessage } from 'amqplib';
+import { Connection, Channel, connect, Options } from 'amqplib';
 import { messaging } from '../config/Settings.json';
-import { ICredentials } from '../interfaces/ICredentials';
-import LoggerService, { Logger } from './loggerService';
+import Logger from './loggerService';
 
-class MessagingService {
-    private logger: Logger = LoggerService.getInstance();
+class Messaging {
     private connection: Connection | null;
     private channel: Channel | null;
-    private user: string;
-    private password: string;
+    private baseChannelOptions: Options.AssertQueue = {
+        durable: true,
+        exclusive: false,
+        autoDelete: false,
+    };
 
-    constructor(credentials: ICredentials) {
-        this.user = credentials.user;
-        this.password = credentials.password;
+    constructor() {
         this.connection = null;
         this.channel = null;
-
-        this.start();
     }
 
     async start(): Promise<void> {
         try {
-            this.logger.info('Initializing Messaging Service...');
+            Logger.info('Initializing Messaging Service...');
 
             const rabbitServer = `${messaging.connection.host}:${messaging.connection.port}`;
-            const connectionString = `amqp://${this.user}:${this.password}@${rabbitServer}`;
+            const rabbitCredentials = `${messaging.administration.user}:${messaging.administration.password}`;
+            const connectionString = `amqp://${rabbitCredentials}@${rabbitServer}`;
 
             this.connection = await connect(connectionString);
             this.channel = await this.connection.createChannel();
 
-            this.logger.info('Messaging Service initialized.');
+            Logger.info('Messaging Service initialized.');
         } catch(ex) {
-            this.logger.error(`Error while initializing Messaging Service: ${ex}`);
+            Logger.error(`Error while initializing Messaging Service: ${ex}`);
+            setTimeout(async () => { this.start(); } , 5000);
         }
     }
 
     publish(queue: string, message: string): boolean {
-        if (this.channel) {
-            return this.channel.sendToQueue(queue, Buffer.from(message));
+        try {
+            return this.channel?.sendToQueue(queue, Buffer.from(message)) || false;
+        } catch(ex) {
+            Logger.error(`Error while publishing message ${message}: ${ex}`);
+            return false;
         }
+    }
 
-        return false;
+    createQueue(queue: string): Promise<boolean> {
+        return new Promise((resolve, reject) => {
+            try {
+                this.channel?.assertQueue(queue, this.baseChannelOptions)
+                    .then(() => resolve(true))
+                    .catch((error) => { throw new Error(error); });
+            } catch(ex) {
+                Logger.error(`Error while creating queue ${queue}: ${ex}`);
+                return reject(false);
+            }
+        });
+    }
+
+    removeQueue(queue: string): Promise<void> {
+        return new Promise((resolve, reject) => {
+            try {
+                this.channel?.deleteQueue(queue)
+                    .then(() => resolve())
+                    .catch((error) => { throw new Error(error); });
+            } catch(ex) {
+                const reason = `Error while deleting queue ${queue}: ${ex}`;
+                Logger.error(reason);
+                return reject(reason);
+            }
+        });
     }
 }
 
-export default MessagingService;
+export default new Messaging();

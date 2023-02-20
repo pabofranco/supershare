@@ -1,6 +1,6 @@
 import winston from "winston";
 
-export class Logger {
+class Logger {
     logger: winston.Logger;
 
     constructor() {
@@ -17,17 +17,6 @@ export class Logger {
         info(message: string)  { this.logger.log('info', message); }
         warn(message: string)  { this.logger.log('warn', message); }
         error(message: string) { this.logger.log('error', message); }
-    }
-
-export default class LoggerService {
-    private static _instance: Logger;
-
-    public static getInstance() {
-        if (this._instance === null) {
-            
-            this._instance = new Logger();
-        }
-
-        return this._instance;
-    }
 }
+
+export default new Logger();

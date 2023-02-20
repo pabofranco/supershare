@@ -8,18 +8,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto_1 = require("crypto");
-const databaseService_1 = __importDefault(require("../services/databaseService"));
-const loggerService_1 = __importDefault(require("../services/loggerService"));
 const validationHelper_1 = require("../helpers/validationHelper");
 class AuthController {
     constructor() {
-        this.logger = loggerService_1.default.getInstance();
-        this.dbConn = databaseService_1.default.getInstance();
+        this.name = 'AuthController';
     }
     /* Authentication:
     *  user logs in with username and password
@@ -33,7 +27,7 @@ class AuthController {
             if (error)
                 return response.status(400).json(message);
             try {
-                const { username, password } = request.body;
+                // const { username, password } = request.body;
                 const token = (0, crypto_1.randomUUID)();
                 return response.status(200).json({ message, token });
             }

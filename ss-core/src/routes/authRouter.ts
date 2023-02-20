@@ -6,7 +6,7 @@ class AuthRouter implements Irouter {
     path: string;
     router: Router;
     controller: AuthController;
-    
+
     constructor() {
         this.path = '/auth';
         this.router = Router();

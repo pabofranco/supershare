@@ -1,16 +1,16 @@
-import DatabaseService from './services/databaseService';
-import LoggerService from './services/loggerService';
+import Database from './services/databaseService';
+import Messaging from './services/messagingService';
 import APIService from './services/apiService';
 import MainRouter from './routes/mainRouter';
 import UserRouter from './routes/userRouter';
 import AuthRouter from './routes/authRouter';
-import { server, database } from './config/Settings.json';
+import { server } from './config/Settings.json';
 import { IapiOptions } from './interfaces/IapiOptions';
 import { Irouter } from './interfaces/Irouter';
 
-// init helpers
-DatabaseService.getInstance(database.connection);
-LoggerService.getInstance();
+// init services
+Database.start();
+Messaging.start();
 
 const controllers: Irouter[] = [
     new MainRouter(),

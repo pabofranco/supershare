@@ -1,24 +1,28 @@
 import { createPool, Pool, format, MysqlError, PoolConnection } from 'mysql';
-import { IdatabaseConfig } from "../interfaces/IdatabaseConfig";
-import LoggerService from './loggerService';
+import { database } from "../config/Settings.json";
+import Logger from './loggerService';
 
+class Database {
+    private poolConnection: Pool | null;
 
-export class DatabaseConnector {
-    private logger = LoggerService.getInstance();
-    private poolConnection: Pool;
+    constructor() {
+        this.poolConnection = null;
+    } 
 
-    constructor( config: IdatabaseConfig) {
-        this.poolConnection = createPool(config);
+    start() {
+        if (!this.poolConnection) {
+            this.poolConnection = createPool(database.connection);
+        }
     }
-    
-    public runQuery<T>(sql: string, args: (string | number)[]): Promise<T> {
+
+    public runQuery<T>(sql: string, args: (string | number)[] = []): Promise<T> {
         return new Promise<T>((resolve, reject) => {
             try {
                 const query = format(sql, args);
-                this.poolConnection.getConnection((connError: MysqlError, conn: PoolConnection) => {
+                this.poolConnection?.getConnection((connError: MysqlError, conn: PoolConnection) => {
                     if (connError) {
                         const errorMessage = `Error while connecting to database: ${connError.code}: ${connError.message}`;
-                        this.logger.error(errorMessage);
+                        Logger.error(errorMessage);
                         return reject(connError);
                     }
 
@@ -26,7 +30,7 @@ export class DatabaseConnector {
                         conn.release();
                         if (error) {
                             const errorMessage = `Error while querying database: ${error.code}: ${error.message}`;
-                            this.logger.error(errorMessage);
+                            Logger.error(errorMessage);
                             return reject(error);
                         }
 
@@ -34,23 +38,11 @@ export class DatabaseConnector {
                     });
                 });
             } catch (ex) {
-                this.logger.error(`Error while querying database: ${ex}`);
+                Logger.error(`Error while querying database: ${ex}`);
                 return reject(ex);
             }
         });
     }
 }
 
-
-export default class DatabaseService {
-    private static _instance: DatabaseConnector;
-
-    public static getInstance(config: IdatabaseConfig | null = null) {
-        if (this._instance === null && config) {
-            
-            this._instance = new DatabaseConnector(config);
-        }
-
-        return this._instance;
-    }
-}
+export default new Database();

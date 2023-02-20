@@ -1,18 +1,10 @@
 import { Request, Response } from 'express';
 import { randomUUID } from 'crypto';
-import { Icontroller } from "../interfaces/Icontroller";
-import DatabaseService, { DatabaseConnector } from "../services/databaseService";
-import LoggerService, { Logger } from "../services/loggerService";
 import { validationHelper } from "../helpers/validationHelper";
+import { Icontroller } from '../interfaces/Icontroller';
 
 class AuthController implements Icontroller {
-    logger: Logger;
-    dbConn: DatabaseConnector;
-
-    constructor() {
-        this.logger = LoggerService.getInstance();
-        this.dbConn = DatabaseService.getInstance();
-    }
+    name = 'AuthController';
 
     /* Authentication:
     *  user logs in with username and password
@@ -25,7 +17,7 @@ class AuthController implements Icontroller {
         if (error) return response.status(400).json(message);
 
         try {
-            const { username, password } = request.body;
+            // const { username, password } = request.body;
             const token = randomUUID();
             return response.status(200).json({ message, token });
 

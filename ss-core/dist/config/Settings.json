@@ -10,5 +10,15 @@
             "user": "admin",
             "password": "nimda"
         }
+    },
+    "messaging": {
+        "connection": {
+            "host": "rmq",
+            "port": 5672
+        },
+        "administration": {
+            "user": "admin",
+            "password": "nimda"
+        }
     }
 }

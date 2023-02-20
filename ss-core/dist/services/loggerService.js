@@ -3,7 +3,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Logger = void 0;
 const winston_1 = __importDefault(require("winston"));
 class Logger {
     constructor() {
@@ -20,14 +19,5 @@ class Logger {
     warn(message) { this.logger.log('warn', message); }
     error(message) { this.logger.log('error', message); }
 }
-exports.Logger = Logger;
-class LoggerService {
-    static getInstance() {
-        if (this._instance === null) {
-            this._instance = new Logger();
-        }
-        return this._instance;
-    }
-}
-exports.default = LoggerService;
+exports.default = new Logger();
 //# sourceMappingURL=loggerService.js.map

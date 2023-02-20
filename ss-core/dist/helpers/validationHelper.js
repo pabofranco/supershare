@@ -4,7 +4,7 @@ exports.validationHelper = void 0;
 exports.validationHelper = {
     validateAuthParams: ({ username, password }) => {
         let error = false;
-        let message = null;
+        let message = undefined;
         if (!username) { // add regex validation
             error = true;
             message = 'Invalid e-mail provided';
