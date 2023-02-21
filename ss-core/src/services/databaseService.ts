@@ -1,4 +1,4 @@
-import { createPool, Pool, format, MysqlError, PoolConnection } from 'mysql';
+import { createPool, Pool, format, MysqlError, PoolConnection, PoolConfig } from 'mysql';
 import { database } from "../config/Settings.json";
 import Logger from './loggerService';
 
@@ -11,7 +11,12 @@ class Database {
 
     start() {
         if (!this.poolConnection) {
-            this.poolConnection = createPool(database.connection);
+            const options: PoolConfig = {
+                ...database.connection,
+                multipleStatements: true,
+            };
+
+            this.poolConnection = createPool(options);
         }
     }
 

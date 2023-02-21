@@ -7,12 +7,12 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
 class APIService {
-    constructor(options, controllers) {
+    constructor(options, routes) {
         this.server = (0, express_1.default)();
         this.port = options.port;
         this.host = options.host;
         this.configureServer();
-        this.initializeRoutes(controllers);
+        this.configureRoutes(routes);
     }
     configureServer() {
         this.server.use(express_1.default.json());
@@ -20,14 +20,14 @@ class APIService {
         this.server.use((0, cookie_parser_1.default)());
         this.server.use((0, cors_1.default)());
     }
-    initializeRoutes(controllers) {
-        controllers.forEach((controller) => {
-            this.server.use(controller.path, controller.router);
+    configureRoutes(routes) {
+        routes.forEach((route) => {
+            this.server.use(route.basePath, route.router);
         });
     }
     startServer() {
         this.server.listen(this.port, this.host, () => {
-            console.log(`API online at http://${this.host}:${this.port}`);
+            console.log(`API online at http://${this.host}:${this.port}/api/v1`);
         });
     }
 }

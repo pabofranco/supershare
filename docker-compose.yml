@@ -9,6 +9,39 @@ networks:
         - subnet: ${APP_NETWORK_SUBNET}
 
 services:
+  core:
+      build: 
+        context: ss-core/
+        dockerfile: .docker/Dockerfile
+      restart: always
+      hostname: 'supershare-core'
+      container_name: 'core'
+      ports:
+        - '${APP_CORE_PORT}:${APP_CORE_PORT}'
+      networks:
+        supernet:
+          ipv4_address: ${APP_CORE_IP}
+      depends_on:
+        - mysql
+        - rmq
+
+  front:
+    build:
+      context: ss-front/
+      dockerfile: .docker/Dockerfile
+    restart: always
+    hostname: 'supershare-front'
+    container_name: 'front'
+    environment:
+        APP_PORT: ${APP_FRONT_PORT}
+    ports:
+      - '${APP_FRONT_PORT}:${APP_FRONT_PORT}'
+    networks:
+      supernet:
+        ipv4_address: ${APP_FRONT_IP}
+    depends_on:
+      - core
+
   rmq:
     image: 'rabbitmq:latest'
     restart: always
@@ -49,38 +82,6 @@ services:
       supernet:
         ipv4_address: ${APP_MYSQL_IP}
  
-  core:
-    build: 
-      context: ss-core/
-      dockerfile: .docker/Dockerfile
-    restart: always
-    hostname: 'supershare-core'
-    container_name: 'core'
-    ports:
-      - '${APP_CORE_PORT}:${APP_CORE_PORT}'
-    networks:
-      supernet:
-        ipv4_address: ${APP_CORE_IP}
-    depends_on:
-      - mysql
-      - rmq
-
-  front:
-    build:
-      context: ss-front/
-      dockerfile: .docker/Dockerfile
-    restart: always
-    hostname: 'supershare-front'
-    container_name: 'front'
-    environment:
-        APP_PORT: ${APP_FRONT_PORT}
-    ports:
-      - '${APP_FRONT_PORT}:${APP_FRONT_PORT}'
-    networks:
-      supernet:
-        ipv4_address: ${APP_FRONT_IP}
-    depends_on:
-      - core
-
+  
 volumes:
   ss-mysql:

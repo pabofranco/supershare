@@ -9,12 +9,13 @@ class APIService {
     public host: string;
     public port: number;
 
-    constructor(options: IapiOptions, controllers: Irouter[]) {
+    constructor(options: IapiOptions, routes: Irouter[]) {
         this.server = express();
         this.port = options.port;
         this.host = options.host;
+
         this.configureServer();
-        this.initializeRoutes(controllers);
+        this.configureRoutes(routes);
     }
 
     private configureServer(): void {
@@ -24,15 +25,15 @@ class APIService {
         this.server.use(cors());
     }
 
-    private initializeRoutes(controllers: Irouter[]): void {
-        controllers.forEach((controller: Irouter) => {
-            this.server.use(controller.path, controller.router);
+    private configureRoutes(routes: Irouter[]): void {
+        routes.forEach((route: Irouter) => {
+            this.server.use(route.basePath, route.router);
         });
     }
 
     public startServer() {
         this.server.listen(this.port, this.host, () => {
-            console.log(`API online at http://${this.host}:${this.port}`);
+            console.log(`API online at http://${this.host}:${this.port}/api/v1`);
         });
     }
 }

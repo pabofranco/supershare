@@ -7,13 +7,14 @@ const express_1 = require("express");
 const authController_1 = __importDefault(require("../controllers/authController"));
 class AuthRouter {
     constructor() {
-        this.path = '/auth';
+        this.basePath = '/api/v1/auth';
         this.router = (0, express_1.Router)();
         this.controller = new authController_1.default();
+        this.configureRoutes();
     }
     configureRoutes() {
-        this.router.post(this.path, this.controller.login);
-        this.router.post(`${this.path}/recovery`, this.controller.recovery);
+        this.router.post('/', this.controller.login);
+        this.router.post('/recovery', this.controller.recovery);
     }
 }
 exports.default = AuthRouter;

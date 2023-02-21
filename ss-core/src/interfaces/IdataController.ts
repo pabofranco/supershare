@@ -1,8 +1,9 @@
-import { IqueryResult } from "./IqueryResult";
+import { Request, Response } from "express";
+import { Icontroller } from "./Icontroller";
 
-export interface IdataController<T> {
-    insert(data: T): Promise<IqueryResult>,
-    remove(data: T): Promise<IqueryResult>,
-    update(data: T): Promise<IqueryResult>,
-    list(): Promise<IqueryResult>,
+export interface IdataController extends Icontroller {
+    insert(req: Request, res: Response): Promise<Response>,
+    remove(req: Request, res: Response): Promise<Response>,
+    update(req: Request, res: Response): Promise<Response>,
+    list(req: Request, res: Response): Promise<Response>,
 }

@@ -6,7 +6,7 @@
     "database": {
         "connection": {
             "database": "supershare",
-            "host": "mysql",
+            "host": "supershare-mysql",
             "user": "admin",
             "password": "nimda"
         }

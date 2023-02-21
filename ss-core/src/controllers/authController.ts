@@ -4,7 +4,11 @@ import { validationHelper } from "../helpers/validationHelper";
 import { Icontroller } from '../interfaces/Icontroller';
 
 class AuthController implements Icontroller {
-    name = 'AuthController';
+    name: string;
+
+    constructor() {
+        this.name = 'AuthController';
+    }
 
     /* Authentication:
     *  user logs in with username and password

@@ -3,19 +3,21 @@ import { Irouter } from "../interfaces/Irouter";
 import AuthController from '../controllers/authController';
 
 class AuthRouter implements Irouter {
-    path: string;
+    basePath: string;
     router: Router;
     controller: AuthController;
 
     constructor() {
-        this.path = '/auth';
+        this.basePath = '/api/v1/auth';
         this.router = Router();
         this.controller = new AuthController();
+
+        this.configureRoutes();
     }
 
     configureRoutes(): void {
-        this.router.post(this.path, this.controller.login);
-        this.router.post(`${this.path}/recovery`, this.controller.recovery);
+        this.router.post('/', this.controller.login);
+        this.router.post('/recovery', this.controller.recovery);
     }
 }
 

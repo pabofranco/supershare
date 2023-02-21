@@ -7,7 +7,7 @@ COPY package*.json ./
 COPY tsconfig.json ./
 COPY build/ ./build/
 
-RUN npm ci --only=production
+RUN npm ci --omit=dev --only=production
 RUN npm i -g serve
 
 EXPOSE ${APP_PORT}

@@ -13,12 +13,12 @@ const Settings_json_1 = require("./config/Settings.json");
 // init services
 databaseService_1.default.start();
 messagingService_1.default.start();
-const controllers = [
+const routes = [
     new mainRouter_1.default(),
     new userRouter_1.default(),
     new authRouter_1.default(),
 ];
 // start server
-const superShare = new apiService_1.default(Settings_json_1.server, controllers);
+const superShare = new apiService_1.default(Settings_json_1.server, routes);
 superShare.startServer();
 //# sourceMappingURL=server.js.map

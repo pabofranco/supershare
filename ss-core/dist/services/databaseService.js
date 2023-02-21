@@ -12,7 +12,8 @@ class Database {
     }
     start() {
         if (!this.poolConnection) {
-            this.poolConnection = (0, mysql_1.createPool)(Settings_json_1.database.connection);
+            const options = Object.assign(Object.assign({}, Settings_json_1.database.connection), { multipleStatements: true });
+            this.poolConnection = (0, mysql_1.createPool)(options);
         }
     }
     runQuery(sql, args = []) {
