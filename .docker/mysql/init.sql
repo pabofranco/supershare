@@ -6,6 +6,8 @@ FLUSH PRIVILEGES;
 
 USE supershare;
 
+SET autocommit = OFF;
+
 CREATE TABLE IF NOT EXISTS users (
     id VARCHAR(36) NOT NULL,
     email VARCHAR(100) NOT NULL,

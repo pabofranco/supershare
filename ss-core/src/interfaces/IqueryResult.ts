@@ -1,4 +1,4 @@
-export interface IqueryResult {
-    error: boolean,
-    data?: string | unknown[],
+export interface IqueryResult<T = string> {
+    error?: boolean,
+    data?: T | string,
 }

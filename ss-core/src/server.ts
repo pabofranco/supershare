@@ -1,4 +1,3 @@
-import Database from './services/databaseService';
 import Messaging from './services/messagingService';
 import APIService from './services/apiService';
 import MainRouter from './routes/mainRouter';
@@ -8,7 +7,6 @@ import { server } from './config/Settings.json';
 import { Irouter } from './interfaces/Irouter';
 
 // init services
-Database.start();
 Messaging.start();
 
 const routes: Irouter[] = [

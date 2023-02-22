@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userQueries = void 0;
+exports.queries = exports.userQs = exports.userQueries = void 0;
 const tables_1 = require("../tables");
 const users = tables_1.tables.users;
 const salts = tables_1.tables.salts;
@@ -12,5 +12,15 @@ exports.userQueries = {
     LIST: `SELECT * FROM ${users} ORDER BY id`,
     GET: `SELECT * FROM ${users} WHERE id = ?`,
     DELETE: `DELETE FROM ${users} WHERE id = ? DELETE FROM ${salts} WHERE user_id = ?`,
+};
+const qs = {
+    insert: (pool) => { console.log(pool.config); },
+    remove: (pool) => { console.log(pool.config); }
+};
+exports.userQs = qs;
+exports.queries = {
+    insert: (pool) => {
+        console.log(pool.config);
+    }
 };
 //# sourceMappingURL=userQueries.js.map

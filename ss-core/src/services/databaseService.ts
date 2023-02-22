@@ -1,53 +1,20 @@
-import { createPool, Pool, format, MysqlError, PoolConnection, PoolConfig } from 'mysql';
+import { createPool, Pool, PoolConfig } from 'mysql';
 import { database } from "../config/Settings.json";
-import Logger from './loggerService';
 
 class Database {
-    private poolConnection: Pool | null;
+    private poolConnection: Pool;
 
     constructor() {
-        this.poolConnection = null;
-    } 
+        const options: PoolConfig = {
+            ...database.connection,
+            multipleStatements: true,
 
-    start() {
-        if (!this.poolConnection) {
-            const options: PoolConfig = {
-                ...database.connection,
-                multipleStatements: true,
-            };
+        };
 
-            this.poolConnection = createPool(options);
-        }
+        this.poolConnection = createPool(options);
     }
 
-    public runQuery<T>(sql: string, args: (string | number)[] = []): Promise<T> {
-        return new Promise<T>((resolve, reject) => {
-            try {
-                const query = format(sql, args);
-                this.poolConnection?.getConnection((connError: MysqlError, conn: PoolConnection) => {
-                    if (connError) {
-                        const errorMessage = `Error while connecting to database: ${connError.code}: ${connError.message}`;
-                        Logger.error(errorMessage);
-                        return reject(connError);
-                    }
-
-                    conn.query(query, (error: MysqlError, result: unknown) => {
-                        conn.release();
-                        if (error) {
-                            const errorMessage = `Error while querying database: ${error.code}: ${error.message}`;
-                            Logger.error(errorMessage);
-                            return reject(error);
-                        }
-
-                        return resolve(result as T);
-                    });
-                });
-            } catch (ex) {
-                Logger.error(`Error while querying database: ${ex}`);
-                return reject(ex);
-            }
-        });
-    }
+    public pool(): Pool { return this.poolConnection; }
 }
 
 export default new Database();

@@ -5,7 +5,7 @@ import { Iresult } from '../interfaces/Iresult';
 export const validationHelper = {
     validateAuthParams: ({ username, password }: IauthParams): Iresult => {
         let error = false;
-        let message = undefined;
+        let message = '';
 
         if (!username) { // add regex validation
             error = true;
@@ -22,7 +22,7 @@ export const validationHelper = {
 
     validateRegisterParams: ({ username, email, password, confirmation }: IregisterParams): Iresult => {
         let error = false;
-        let message = 'User registration was successful';
+        let message = '';
 
         if (!username) {
             error = true;

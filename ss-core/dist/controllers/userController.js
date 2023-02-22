@@ -14,10 +14,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const crypto_1 = require("crypto");
 const validationHelper_1 = require("../helpers/validationHelper");
-const userQueries_1 = require("../schemas/queries/userQueries");
 const databaseService_1 = __importDefault(require("../services/databaseService"));
 const loggerService_1 = __importDefault(require("../services/loggerService"));
 const messagingService_1 = __importDefault(require("../services/messagingService"));
+const userQueries_1 = require("../schemas/queries/userQueries");
 class UserController {
     constructor() {
         this.name = 'UserController';

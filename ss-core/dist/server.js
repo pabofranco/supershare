@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const databaseService_1 = __importDefault(require("./services/databaseService"));
+const userQueries_1 = require("./schemas/queries/userQueries");
 const messagingService_1 = __importDefault(require("./services/messagingService"));
 const apiService_1 = __importDefault(require("./services/apiService"));
 const mainRouter_1 = __importDefault(require("./routes/mainRouter"));
@@ -21,4 +22,7 @@ const routes = [
 // start server
 const superShare = new apiService_1.default(Settings_json_1.server, routes);
 superShare.startServer();
+console.log(JSON.stringify(userQueries_1.userQs));
+console.log(typeof (userQueries_1.userQs));
+console.log(Object.keys(userQueries_1.userQs));
 //# sourceMappingURL=server.js.map
