@@ -1,9 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const router = (0, express_1.Router)();
-router.get('/', (_, res) => {
-    return res.status(200).json({ status: 'ok', message: 'online' });
-});
-module.exports = router;
+const controllers_1 = require("../controllers");
+class MainRouter {
+    constructor() {
+        this.controller = controllers_1.MainController;
+        this.basePath = '/api/v1/main';
+        this.router = (0, express_1.Router)();
+        this.configureRoutes();
+    }
+    configureRoutes() {
+        this.router.get('/health', this.controller.healthCheck);
+        this.router.get('/describe/:table', this.controller.describeTable);
+    }
+}
+exports.default = MainRouter;
 //# sourceMappingURL=main.js.map

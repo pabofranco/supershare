@@ -4,7 +4,7 @@ exports.validationHelper = void 0;
 exports.validationHelper = {
     validateAuthParams: ({ username, password }) => {
         let error = false;
-        let message = undefined;
+        let message = '';
         if (!username) { // add regex validation
             error = true;
             message = 'Invalid e-mail provided';
@@ -17,7 +17,7 @@ exports.validationHelper = {
     },
     validateRegisterParams: ({ username, email, password, confirmation }) => {
         let error = false;
-        let message = 'User registration was successful';
+        let message = '';
         if (!username) {
             error = true;
             message = 'Invalid username provided';
@@ -36,5 +36,22 @@ exports.validationHelper = {
         }
         return { error, message };
     },
+    validateQueueMessage: ({ id, queue, data }) => {
+        let error = false;
+        let message = '';
+        if (!id) {
+            error = true;
+            message = 'Invalid id provided';
+        }
+        if (!queue) {
+            error = true;
+            message = 'Invalid queue provided';
+        }
+        if (!data) {
+            error = true;
+            message = 'Invalid data provided';
+        }
+        return { error, message };
+    }
 };
 //# sourceMappingURL=validationHelper.js.map

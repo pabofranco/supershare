@@ -42,10 +42,10 @@ class Messaging {
             }
         });
     }
-    publish(queue, message) {
+    publish(queue, message, id) {
         var _a;
         try {
-            return ((_a = this.channel) === null || _a === void 0 ? void 0 : _a.sendToQueue(queue, Buffer.from(message))) || false;
+            return ((_a = this.channel) === null || _a === void 0 ? void 0 : _a.sendToQueue(queue, Buffer.from(message), { userId: id })) || false;
         }
         catch (ex) {
             loggerService_1.default.error(`Error while publishing message ${message}: ${ex}`);

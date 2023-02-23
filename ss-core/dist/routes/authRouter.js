@@ -7,9 +7,9 @@ const express_1 = require("express");
 const authController_1 = __importDefault(require("../controllers/authController"));
 class AuthRouter {
     constructor() {
+        this.controller = authController_1.default;
         this.basePath = '/api/v1/auth';
         this.router = (0, express_1.Router)();
-        this.controller = new authController_1.default();
         this.configureRoutes();
     }
     configureRoutes() {

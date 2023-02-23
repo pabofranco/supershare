@@ -1,4 +1,4 @@
 export interface IqueryResult<T = string> {
     error?: boolean,
-    data?: T | string,
+    data: T | string,
 }

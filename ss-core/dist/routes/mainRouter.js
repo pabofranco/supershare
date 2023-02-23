@@ -7,9 +7,9 @@ const express_1 = require("express");
 const mainController_1 = __importDefault(require("../controllers/mainController"));
 class MainRouter {
     constructor() {
+        this.controller = mainController_1.default;
         this.basePath = '/api/v1/main';
         this.router = (0, express_1.Router)();
-        this.controller = new mainController_1.default();
         this.configureRoutes();
     }
     configureRoutes() {

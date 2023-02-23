@@ -12,61 +12,80 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const crypto_1 = require("crypto");
 const validationHelper_1 = require("../helpers/validationHelper");
-const databaseService_1 = __importDefault(require("../services/databaseService"));
 const loggerService_1 = __importDefault(require("../services/loggerService"));
-const messagingService_1 = __importDefault(require("../services/messagingService"));
-const userQueries_1 = require("../schemas/queries/userQueries");
+const userRepository_1 = require("../repositories/userRepository");
 class UserController {
-    constructor() {
-        this.name = 'UserController';
+    list(_, res) {
+        var _a;
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const users = yield userRepository_1.userRepository.list();
+                if (users.error)
+                    throw new Error((_a = users.data) === null || _a === void 0 ? void 0 : _a.toString());
+                loggerService_1.default.info(JSON.stringify(users));
+                return res.status(200).json(users);
+            }
+            catch (ex) {
+                const errorMsg = `Error while getting users: ${ex}`;
+                loggerService_1.default.error(errorMsg);
+                return res.status(500).json({ error: true, data: errorMsg });
+            }
+        });
     }
     insert(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // parameters validation
                 const { error, message } = validationHelper_1.validationHelper.validateRegisterParams(req.body);
-                if (error) {
+                if (error)
                     throw new Error(message);
-                }
-                const data = req.body;
-                const userId = (0, crypto_1.randomUUID)();
-                const userQueue = `queue-${userId}`;
-                // create user queue
-                if (!(yield messagingService_1.default.createQueue(userQueue))) {
-                    throw new Error('Error creating queue');
-                }
-                // create salt entry
-                const userSalt = (0, crypto_1.randomUUID)();
-                const pswData = `${data.password}${userSalt}`;
-                const saltedPsw = (0, crypto_1.createHash)('sha256').update(pswData).digest('hex');
-                // user payload
+                const { email, password, username } = req.body;
+                const userData = userRepository_1.createNew.user(req.body);
+                const saltData = userRepository_1.createNew.salt(userData.id);
+                const pswData = userRepository_1.createNew.password(userData.id, password, saltData.salt);
                 const queryData = [
-                    userId,
-                    data.username,
-                    data.email,
-                    userQueue,
-                    (0, crypto_1.randomUUID)(),
-                    userSalt,
-                    userId,
-                    (0, crypto_1.randomUUID)(),
-                    saltedPsw,
-                    userId,
+                    userData.id, username, email, userData.queue,
+                    saltData.id, saltData.salt, saltData.user_id,
+                    pswData.id, pswData.password, pswData.user_id, // password
                 ];
-                const insertResult = yield databaseService_1.default.runQuery(userQueries_1.userQueries.INSERT, queryData);
-                loggerService_1.default.info(JSON.stringify(insertResult));
-                // return creted user data
-                const userInfo = {
-                    id: userId,
-                    username: data.username,
-                    email: data.email,
-                    queue: userQueue,
-                };
-                return res.status(200).json({ error: false, data: [userInfo] });
+                const newUser = yield userRepository_1.userRepository.insert(queryData);
+                if (newUser.error)
+                    throw new Error(newUser.message);
+                loggerService_1.default.info(newUser.message);
+                // // create user queue
+                // if (!await Messaging.createQueue(userData.queue)) {
+                //   throw new Error('Error creating queue');
+                // }
+                return res.status(200).json({ error: false, data: userData });
             }
             catch (ex) {
                 const errorMsg = `Error while adding user: ${ex}`;
+                loggerService_1.default.error(errorMsg);
+                return res.status(500).json({ error: true, data: errorMsg });
+            }
+        });
+    }
+    update(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { id, password, email } = req.body;
+                const isPasswordUpdate = password && !email;
+                if (isPasswordUpdate) {
+                    const { error, message } = yield userRepository_1.userRepository.updatePassword(id, password);
+                    if (error)
+                        throw new Error(message);
+                    return res.status(200).json({ error: false, data: message });
+                }
+                else {
+                    const { error, message } = yield userRepository_1.userRepository.updateEmail(id, email);
+                    if (error)
+                        throw new Error(message);
+                    return res.status(200).json({ error: false, message });
+                }
+            }
+            catch (ex) {
+                const errorMsg = `Error while updating user: ${ex}`;
                 loggerService_1.default.error(errorMsg);
                 return res.status(500).json({ error: true, data: errorMsg });
             }
@@ -79,9 +98,11 @@ class UserController {
                 if (!id) {
                     throw new Error('Invalid Id provided');
                 }
-                const deleteResult = yield databaseService_1.default.runQuery(userQueries_1.userQueries.DELETE, [id, id]);
-                loggerService_1.default.info(JSON.stringify(deleteResult));
-                return res.status(200).json({ error: false, data: `User ${id} was removed successfully` });
+                const removedUser = yield userRepository_1.userRepository.remove(id);
+                if (removedUser.error)
+                    throw new Error(removedUser.message);
+                loggerService_1.default.info(JSON.stringify(removedUser.message));
+                return res.status(200).json({ error: false, data: removedUser.message });
             }
             catch (ex) {
                 const errorMsg = `Error while removing user: ${ex}`;
@@ -90,84 +111,6 @@ class UserController {
             }
         });
     }
-    update(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { password, email } = req.body;
-                const isPasswordUpdate = password && !email;
-                if (isPasswordUpdate) {
-                    const { error, data } = yield this.updatePassword(req.body);
-                    if (error) {
-                        throw new Error(data === null || data === void 0 ? void 0 : data.toString());
-                    }
-                    return res.status(200).json({ error: false, data });
-                }
-                else {
-                    const { error, data } = yield this.updateEmail(req.body);
-                    if (error) {
-                        throw new Error(data === null || data === void 0 ? void 0 : data.toString());
-                    }
-                    return res.status(200).json({ error: false, data });
-                }
-            }
-            catch (ex) {
-                const errorMsg = `Error while updating user: ${ex}`;
-                loggerService_1.default.error(errorMsg);
-                return res.status(500).json({ error: true, data: errorMsg });
-            }
-        });
-    }
-    list(_, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const users = yield databaseService_1.default.runQuery(userQueries_1.userQueries.LIST);
-                loggerService_1.default.info(JSON.stringify(users));
-                return res.status(200).json({ error: false, data: users });
-            }
-            catch (ex) {
-                const errorMsg = `Error while getting users: ${ex}`;
-                loggerService_1.default.error(errorMsg);
-                return res.status(500).json({ error: true, data: errorMsg });
-            }
-        });
-    }
-    updateEmail(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { id, email } = data;
-            if (!email) {
-                throw new Error('Invalid e-mail provided');
-            }
-            try {
-                yield databaseService_1.default.runQuery(userQueries_1.userQueries.UPDATE_EMAIL, [id, email]);
-                return { error: false, data: 'E-mail updated successfully' };
-            }
-            catch (ex) {
-                const errorMsg = `Error while updating e-mail for user ${id}: ${ex}`;
-                loggerService_1.default.error(errorMsg);
-                return { error: true, data: errorMsg };
-            }
-        });
-    }
-    updatePassword(data) {
-        return __awaiter(this, void 0, void 0, function* () {
-            const { id, password } = data;
-            try {
-                // create new salt
-                const userSalt = (0, crypto_1.randomUUID)();
-                const saltedPsw = (0, crypto_1.createHash)('sha256')
-                    .update(`${password}${userSalt}`)
-                    .digest()
-                    .toString();
-                yield databaseService_1.default.runQuery(userQueries_1.userQueries.UPDATE_PASSWORD, [saltedPsw, id, userSalt, id]);
-                return { error: false, data: 'Password updated successfully' };
-            }
-            catch (ex) {
-                const errorMsg = `Error while updating password for user ${id}: ${ex}`;
-                loggerService_1.default.error(errorMsg);
-                return { error: true, data: errorMsg };
-            }
-        });
-    }
 }
-exports.default = UserController;
+exports.default = new UserController();
 //# sourceMappingURL=userController.js.map

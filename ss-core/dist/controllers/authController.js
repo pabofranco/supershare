@@ -12,9 +12,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const crypto_1 = require("crypto");
 const validationHelper_1 = require("../helpers/validationHelper");
 class AuthController {
-    constructor() {
-        this.name = 'AuthController';
-    }
     /* Authentication:
     *  user logs in with username and password
     *  user receives auth token to be sent in every request from now on
@@ -22,17 +19,18 @@ class AuthController {
     */
     login(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            // parameters validation
-            const { error, message } = validationHelper_1.validationHelper.validateAuthParams(request.body);
-            if (error)
-                return response.status(400).json(message);
             try {
+                // parameters validation
+                const { error, message } = validationHelper_1.validationHelper.validateAuthParams(request.body);
+                if (error)
+                    throw new Error(message);
                 // const { username, password } = request.body;
                 const token = (0, crypto_1.randomUUID)();
                 return response.status(200).json({ message, token });
             }
             catch (ex) {
-                return response.status(500).json(ex);
+                const { message } = ex;
+                return response.status(500).json({ error: true, message });
             }
         });
     }
@@ -45,9 +43,15 @@ class AuthController {
     */
     recovery(_, response) {
         return __awaiter(this, void 0, void 0, function* () {
-            return response.status(200).json({ status: 'ok' });
+            try {
+                return response.status(200).json({ status: 'ok' });
+            }
+            catch (ex) {
+                const { message } = ex;
+                return response.status(500).json({ error: true, message });
+            }
         });
     }
 }
-exports.default = AuthController;
+exports.default = new AuthController();
 //# sourceMappingURL=authController.js.map

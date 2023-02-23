@@ -1,10 +1,7 @@
-import Messaging from './services/messagingService';
-import APIService from './services/apiService';
-import MainRouter from './routes/mainRouter';
-import UserRouter from './routes/userRouter';
-import AuthRouter from './routes/authRouter';
+import { APIService, Messaging } from './services';
+import { AuthRouter, MainRouter, UserRouter } from './routes';
 import { server } from './config/Settings.json';
-import { Irouter } from './interfaces/Irouter';
+import { Irouter } from './interfaces';
 
 // init services
 Messaging.start();
