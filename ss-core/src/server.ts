@@ -1,9 +1,10 @@
-import { API, Messaging } from './services';
+require('module-alias/register');
+import { Irouter } from 'interfaces';
+import { API, Messaging } from 'services';
 import { server } from './config/Settings.json';
-import { Irouter } from './interfaces';
 import AuthRouter  from './endpoints/auth/Auth.router';
-import MainRouter from 'endpoints/main/Main.router';
-import UserRouter from 'endpoints/user/User.router';
+import MainRouter from './endpoints/main/Main.router';
+import UserRouter from './endpoints/user/User.router';
 
 // init services
 Messaging.start();

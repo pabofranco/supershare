@@ -15,13 +15,6 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
-    "baseUrl": "./src",
-    "paths": {
-      "interfaces": ["./interfaces"],
-      "services": ["./services"],
-      "providers": ["./providers"],
-      "helpers": ["./helpers"],
-      "schemas": ["./schemas"]
-    }
+    "baseUrl": "./src"
   }
 }
