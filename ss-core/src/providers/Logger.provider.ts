@@ -1,6 +1,6 @@
-import winston from "winston";
+import winston from 'winston';
 
-class LoggerProvider {
+class Logger {
     logger: winston.Logger;
 
     constructor() {
@@ -19,4 +19,4 @@ class LoggerProvider {
         error(message: string) { this.logger.log('error', message); }
 }
 
-export default new LoggerProvider();
+export default new Logger();

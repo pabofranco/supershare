@@ -1,4 +1,4 @@
-import LoggerProvider from "./providers/logger";
-import TokenProvider from "./providers/token";
+import Logger from 'providers/Logger.provider';
+import Token from 'providers/Token.provider';
 
-export { LoggerProvider as Logger, TokenProvider };
+export { Logger, Token };

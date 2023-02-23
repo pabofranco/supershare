@@ -1,6 +1,6 @@
-import { Itoken } from "../interfaces";
+import { Itoken } from 'interfaces';
 
-class TokenProvider {
+class Token {
     private validTokens: Map<string, string>;
 
     constructor() {
@@ -44,4 +44,4 @@ class TokenProvider {
     }
 }
 
-export default new TokenProvider();
+export default new Token();

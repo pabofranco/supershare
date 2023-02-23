@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { Irouter } from "../interfaces";
-import { UserController } from "../controllers";
+import { Router } from 'express';
+import { Irouter } from 'interfaces';
+import UserController from './User.controller';
 
 class UserRouter implements Irouter {
     basePath: string;

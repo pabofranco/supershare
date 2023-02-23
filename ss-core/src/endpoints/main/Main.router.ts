@@ -1,6 +1,6 @@
-import { Router } from "express";
-import { Irouter } from "../interfaces";
-import { MainController } from "../controllers";
+import { Router } from 'express';
+import { Irouter } from 'interfaces';
+import MainController from './Main.controller';
 
 class MainRouter implements Irouter {
     basePath: string;

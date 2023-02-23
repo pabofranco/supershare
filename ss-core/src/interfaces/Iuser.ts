@@ -1,6 +1,6 @@
 export interface Iuser {
-    id: string;
-    username: string;
-    email: string;
-    queue: string;
+    id: string,
+    username: string,
+    email: string,
+    queue: string,
 }

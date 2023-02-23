@@ -1,7 +1,9 @@
-import { APIService, Messaging } from './services';
-import { AuthRouter, MainRouter, UserRouter } from './routes';
+import { API, Messaging } from './services';
 import { server } from './config/Settings.json';
 import { Irouter } from './interfaces';
+import AuthRouter  from './endpoints/auth/Auth.router';
+import MainRouter from 'endpoints/main/Main.router';
+import UserRouter from 'endpoints/user/User.router';
 
 // init services
 Messaging.start();
@@ -13,5 +15,5 @@ const routes: Irouter[] = [
 ];
 
 // start server
-const superShare = new APIService(server, routes);
+const superShare = new API(server, routes);
 superShare.startServer();

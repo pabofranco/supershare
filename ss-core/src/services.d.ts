@@ -1,5 +1,5 @@
-import APIService from "./services/api";
-import DatabaseService from "./services/database";
-import MessagingService from "./services/messaging";
+import API from 'services/Api.service';
+import Database from 'services/Database.service';
+import Messaging from 'services/Messaging.service';
 
-export { APIService, DatabaseService as Database, MessagingService as Messaging };
+export { API, Database, Messaging };

@@ -1,4 +1,4 @@
-import { tables } from '../tables';
+import { tables } from 'schemas/tables';
 
 const users = tables.users;
 const salts = tables.salts;

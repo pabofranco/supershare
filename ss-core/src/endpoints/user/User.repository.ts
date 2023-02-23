@@ -1,8 +1,8 @@
-import { format } from "mysql";
-import { createHash, randomUUID } from "crypto";
-import { userQueries } from "../schemas/queries/userQueries";
-import { Database } from "../services";
-import { IqueryResult, Iresult, Iuser, IuserPassword, IuserSalt, IregisterParams } from '../interfaces';
+import { format } from 'mysql';
+import { createHash, randomUUID } from 'crypto';
+import { userQueries } from './User.queries';
+import { Database } from 'services';
+import { IqueryResult, Iresult, Iuser, IuserPassword, IuserSalt, IregisterParams } from 'interfaces';
 
 export const createNew = {
     user: (data: IregisterParams): Iuser => {

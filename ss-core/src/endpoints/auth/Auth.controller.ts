@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { randomUUID } from 'crypto';
-import { validationHelper } from "../helpers";
+import { validationHelper } from 'helpers';
 
 class AuthController {
     /* Authentication:

@@ -1,4 +1,4 @@
-import { IauthParams, IregisterParams, Iresult, IqueueMessage } from '../interfaces';
+import { IauthParams, IregisterParams, Iresult, IqueueMessage } from 'interfaces';
 
 export const validationHelper = {
     validateAuthParams: ({ username, password }: IauthParams): Iresult => {

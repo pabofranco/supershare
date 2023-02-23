@@ -1,8 +1,8 @@
 import { Connection, Channel, connect, Options } from 'amqplib';
 import { messaging } from '../config/Settings.json';
-import { Logger } from '../providers';
+import { Logger } from 'providers';
 
-class MessagingService {
+class Messaging {
     private connection: Connection | null;
     private channel: Channel | null;
     private baseChannelOptions: Options.AssertQueue = {
@@ -71,4 +71,4 @@ class MessagingService {
     }
 }
 
-export default new MessagingService();
+export default new Messaging();

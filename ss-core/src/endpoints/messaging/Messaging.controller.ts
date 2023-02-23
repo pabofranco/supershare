@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { validationHelper } from '../helpers';
-import { IqueueMessage } from '../interfaces';
-import { Messaging } from '../services';
+import { validationHelper } from 'helpers';
+import { IqueueMessage } from 'interfaces';
+import { Messaging } from 'services';
 
 class MessagingController {
     public async createQueue(request: Request, response: Response): Promise<Response> {

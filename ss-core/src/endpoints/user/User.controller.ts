@@ -1,8 +1,8 @@
 import { Request, Response } from 'express';
-import { validationHelper } from '../helpers';
-import { Logger } from '../providers';
-import { createNew, userRepository } from '../repositories';
-import { IregisterParams, IqueryResult, Iresult, Iuser, IuserSalt, IuserPassword } from '../interfaces';
+import { validationHelper } from 'helpers';
+import { Logger } from 'providers';
+import { createNew, userRepository } from './User.repository';
+import { IregisterParams, IqueryResult, Iresult, Iuser, IuserSalt, IuserPassword } from 'interfaces';
 
 class UserController {
   async list(_: Request, res: Response): Promise<Response> {

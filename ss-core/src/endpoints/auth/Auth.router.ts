@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { AuthController } from '../controllers';
-import { Irouter } from "../interfaces";
+import { Irouter } from 'interfaces';
+import AuthController from './Auth.controller';
 
 class AuthRouter implements Irouter {
     basePath: string;

@@ -1,9 +1,9 @@
 import express from 'express';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
-import { IapiOptions, Irouter } from '../interfaces';
+import { IapiOptions, Irouter } from 'interfaces';
 
-class APIService {
+class API {
     public server: express.Application;
     public host: string;
     public port: number;
@@ -37,4 +37,4 @@ class APIService {
     }
 }
 
-export default APIService;
+export default API;

@@ -1,7 +1,7 @@
 import { createPool, Pool, PoolConfig } from 'mysql';
-import { database } from "../config/Settings.json";
+import { database } from '../config/Settings.json';
 
-class DatabaseService {
+class Database {
     private poolConnection: Pool;
 
     constructor() {
@@ -17,4 +17,4 @@ class DatabaseService {
     public pool(): Pool { return this.poolConnection; }
 }
 
-export default new DatabaseService();
+export default new Database();

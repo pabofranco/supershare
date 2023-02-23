@@ -1,5 +1,5 @@
 import { NextFunction, Request, Response } from 'express';
-import { TokenProvider } from '../providers';
+import { Token } from 'providers';
 
 export const authHelper = {
     authenticateRequest: (request: Request, response: Response, next: NextFunction) => {
@@ -11,7 +11,7 @@ export const authHelper = {
             if (!etag || etag === 'null')
                 throw new Error('Invalid id provided');
 
-            if (!TokenProvider.validateToken({ id: etag, token: authorization }))
+            if (!Token.validateToken({ id: etag, token: authorization }))
                 throw new Error('Unauthorized');
 
             next();

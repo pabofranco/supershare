@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { Irouter } from '../interfaces';
-import { authHelper } from '../helpers';
-import { MessagingController } from '../controllers';
+import { Irouter } from 'interfaces';
+import { authHelper } from 'helpers';
+import MessagingController from './Messaging.controller';
 
 class MessagingRouter implements Irouter {
     basePath: string;
