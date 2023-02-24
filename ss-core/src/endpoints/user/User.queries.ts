@@ -1,10 +1,12 @@
 import { tables } from 'schemas/tables';
 
-const users = tables.users;
-const salts = tables.salts;
-const passwords = tables.passwords;
+const { users, salts, passwords } = tables;
 
 export const userQueries = {
+    LIST: `SELECT * FROM ${users} ORDER BY id`,
+    GET: `SELECT * FROM ${users} WHERE id = ?`,
+    UPDATE_EMAIL: `UPDATE TABLE ${users} SET email = ? WHERE id = ?`,
+
     INSERT: `
     START TRANSACTION;
     INSERT INTO ${users} (id, username, email, queue) VALUES (?, ?, ?, ?);
@@ -13,18 +15,12 @@ export const userQueries = {
     COMMIT;
     `,
 
-    UPDATE_EMAIL: `UPDATE TABLE ${users} SET email = ? WHERE id = ?`,
-
     UPDATE_PASSWORD: `
     START TRANSACTION;
     UPDATE TABLE ${salts} SET salt = ? WHERE user_id = ?;
     UPDATE TABLE ${users} SET password = ? WHERE user_id = ?;
     COMMIT;
     `,
-
-    LIST: `SELECT * FROM ${users} ORDER BY id`,
-
-    GET: `SELECT * FROM ${users} WHERE id = ?`,
 
     DELETE: `
     START TRANSACTION;

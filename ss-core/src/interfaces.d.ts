@@ -10,6 +10,7 @@ import { Itoken } from 'interfaces/Itoken';
 import { Iuser } from 'interfaces/Iuser';
 import { IuserPassword } from 'interfaces/IuserPassword';
 import { IuserSalt } from 'interfaces/IuserSalt';
+import { IuserValidation } from 'interfaces/IuserValidation';
 
 export {
     IapiOptions,
@@ -23,5 +24,6 @@ export {
     Itoken,
     Iuser,
     IuserPassword,
-    IuserSalt
+    IuserSalt,
+    IuserValidation,
 };

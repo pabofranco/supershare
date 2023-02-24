@@ -1,11 +1,12 @@
 import { format } from 'mysql';
-import { createHash, randomUUID } from 'crypto';
+import { randomUUID } from 'crypto';
 import { userQueries } from './User.queries';
 import { Database } from 'services';
-import { IqueryResult, Iresult, Iuser, IuserPassword, IuserSalt, IregisterParams } from 'interfaces';
+import { IqueryResult, Iresult, Iuser, IuserSalt, IregisterParams } from 'interfaces';
+import { authHelper } from 'helpers';
 
-export const createNew = {
-    user: (data: IregisterParams): Iuser => {
+export const userRepository = {
+    newUser: (data: IregisterParams): Iuser => {
         const id = randomUUID(); 
         return {
             ... data,
@@ -14,27 +15,6 @@ export const createNew = {
         };
     },
 
-    salt: (id: string): IuserSalt => {
-        return {
-            id: randomUUID(),
-            salt: randomUUID(),
-            user_id: id,
-        };
-    },
-
-    password: (id: string, password: string, salt: string): IuserPassword => {
-        const unhashedPsw = `${password}${salt}`;
-        const hasehdPsw = createHash('sha256').update(unhashedPsw).digest('hex');
-
-        return {
-            id: randomUUID(),
-            password: hasehdPsw,
-            user_id: id, 
-        };
-    }
-};
-
-export const userRepository = {
     list: async (): Promise<IqueryResult<Iuser[]>> => {
         return new Promise((resolve) => {
             try {
@@ -98,8 +78,8 @@ export const userRepository = {
     updatePassword: async (id: string, psw: string): Promise<Iresult> => {
         return new Promise((resolve) => {
             try {
-                const { salt } = createNew.salt(id);
-                const { password } = createNew.password(id, psw, salt);
+                const { salt } = authHelper.newSalt(id);
+                const { password } = authHelper.newPassword(id, psw, salt);
                 const updateQuery = format(userQueries.UPDATE_PASSWORD, [salt, id, password, id]);
 
                 Database.pool().query(updateQuery, (error) => {
@@ -114,7 +94,7 @@ export const userRepository = {
         });
     },
 
-    updateSalt: async(data: IuserSalt): Promise<Iresult> => {
+    updateSalt: async(_: IuserSalt): Promise<Iresult> => {
         return new Promise((resolve) => {
             try {
                 return resolve({ message: 'Salt updated successfully' });

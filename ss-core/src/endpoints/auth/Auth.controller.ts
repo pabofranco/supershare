@@ -1,6 +1,8 @@
 import { Request, Response } from 'express';
-import { randomUUID } from 'crypto';
 import { validationHelper } from 'helpers';
+import { Token } from 'providers';
+import { IauthParams, IqueryResult, IuserValidation } from 'interfaces';
+import { authRepository } from './Auth.repository';
 
 class AuthController {
     /* Authentication:
@@ -14,10 +16,22 @@ class AuthController {
             const { error, message } = validationHelper.validateAuthParams(request.body);
             if (error) throw new Error(message);
 
-            // const { username, password } = request.body;
-            const token = randomUUID();
-            return response.status(200).json({ message, token });
+            const { username, password } = request.body as IauthParams;
+            // get salt data => get userId, salt, password from username
+            // hash password and check
+            // if hash checks out, return userId and token
+            // token => authentication / userId => etags
+            const userData: IqueryResult<IuserValidation> = await authRepository.getValidationData(username);
+            if (userData.error) throw new Error(userData.data as string);
 
+            const { user_id, salt, hashed_password } = userData.data as IuserValidation;
+            const token = Token.generateToken();
+            if (authRepository.checkPassword(password, salt, hashed_password)
+                && Token.addToken({ id: user_id, token })) {
+                return response.status(200).json({ user_id, token });
+            }
+
+            throw new Error('Login failed: Invalid password for username provided');
         } catch (ex) {
             const { message } = ex as Error;
             return response.status(500).json({ error: true, message });

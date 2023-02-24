@@ -1,3 +1,4 @@
+import { randomUUID } from 'crypto';
 import { Itoken } from 'interfaces';
 
 class Token {
@@ -5,6 +6,10 @@ class Token {
 
     constructor() {
         this.validTokens = new Map<string, string>();
+    }
+
+    generateToken(): string {
+        return randomUUID();
     }
 
     addToken(data: Itoken): boolean {

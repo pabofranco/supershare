@@ -1,5 +1,12 @@
+import { createHash, randomUUID } from 'crypto';
 import { NextFunction, Request, Response } from 'express';
+import { IuserPassword, IuserSalt } from 'interfaces';
 import { Token } from 'providers';
+
+const hashPassword = (password: string, salt: string): string => {
+    const unhashedPsw = `${password}${salt}`;
+    return createHash('sha256').update(unhashedPsw).digest('hex');
+};
 
 export const authHelper = {
     authenticateRequest: (request: Request, response: Response, next: NextFunction) => {
@@ -20,4 +27,24 @@ export const authHelper = {
             return response.status(400).json({ error: true, message });
         }
     },
+
+    newSalt: (id: string): IuserSalt => {
+        return {
+            id: randomUUID(),
+            salt: randomUUID(),
+            user_id: id,
+        };
+    },
+
+    newPassword: (id: string, password: string, salt: string): IuserPassword => {
+        return {
+            id: randomUUID(),
+            password: hashPassword(password, salt),
+            user_id: id,
+        };
+    },
+
+    hashPassword: (password: string, salt: string): string => {
+        return hashPassword(password, salt);
+    }
 };

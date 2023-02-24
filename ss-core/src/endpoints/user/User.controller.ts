@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
-import { validationHelper } from 'helpers';
+import { validationHelper, authHelper } from 'helpers';
 import { Logger } from 'providers';
-import { createNew, userRepository } from './User.repository';
+import { userRepository } from './User.repository';
 import { IregisterParams, IqueryResult, Iresult, Iuser, IuserSalt, IuserPassword } from 'interfaces';
 
 class UserController {
@@ -28,9 +28,9 @@ class UserController {
 
       const { email, password, username } = req.body as IregisterParams;
 
-      const userData = createNew.user(req.body);
-      const saltData: IuserSalt = createNew.salt(userData.id);
-      const pswData: IuserPassword = createNew.password(userData.id, password, saltData.salt);
+      const userData = userRepository.newUser(req.body);
+      const saltData: IuserSalt = authHelper.newSalt(userData.id);
+      const pswData: IuserPassword = authHelper.newPassword(userData.id, password, saltData.salt);
 
       const queryData: string[] = [
         userData.id, username, email, userData.queue,   // user
@@ -42,11 +42,6 @@ class UserController {
 
       if (newUser.error) throw new Error(newUser.message);
       Logger.info(newUser.message);
-
-      // // create user queue
-      // if (!await Messaging.createQueue(userData.queue)) {
-      //   throw new Error('Error creating queue');
-      // }
 
       return res.status(200).json({ error: false, data: userData });
     } catch(ex) {
