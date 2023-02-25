@@ -39,9 +39,7 @@ class UserController {
       ];
 
       const newUser: Iresult = await userRepository.insert(queryData);
-
       if (newUser.error) throw new Error(newUser.message);
-      Logger.info(newUser.message);
 
       return res.status(200).json({ error: false, data: userData });
     } catch(ex) {

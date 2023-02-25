@@ -1,24 +1,26 @@
 import { authHelper } from 'helpers';
-import { IuserValidation, IqueryResult } from 'interfaces';
+import { IuserValidation } from 'interfaces';
+import { Iquery } from 'interfaces/Iquery';
 import { Database } from 'services';
 import { authQueries } from './Auth.queries';
 
 export const authRepository = {
-    getValidationData: async (username: string): Promise<IqueryResult<IuserValidation>> => {
+    getValidationData: async (username: string): Promise<Iquery<IuserValidation>> => {
         return new Promise((resolve) => {
             try {
-                Database.pool().query(authQueries.GET_USER_DATA, [username], (error, row) => {
+                Database.pool().query(authQueries.GET_USER_DATA, [username], (error, rows) => {
                     if (error) throw new Error(error.message);
-                    return resolve({ data: row as IuserValidation });
+
+                    return resolve({ error: false, data: rows[0] });
                 });
             } catch (ex) {
                 const { message } = ex as Error;
-                return resolve({ error: true, data: message });
+                return resolve({ error: true, message });
             }
         });
     },
 
-    checkPassword: (user_password: string, user_salt: string, hashed_password: string): boolean => {
-        return hashed_password === authHelper.hashPassword(user_password, user_salt);
+    checkPassword: (password: string, salt: string, hash: string): boolean => {
+        return hash === authHelper.hashPassword(password, salt);
     }
 };

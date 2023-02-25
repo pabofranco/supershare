@@ -2,6 +2,7 @@ import { IapiOptions } from 'interfaces/IapiOptions';
 import { IauthParams } from 'interfaces/IauthParams';
 import { IdatabaseConfig } from 'interfaces/IdatabaseConfig';
 import { IqueryResult } from 'interfaces/IqueryResult';
+import { Iquery } from 'interfaces/Iquery';
 import { IqueueMessage } from 'interfaces/IqueueMessage';
 import { IregisterParams } from 'interfaces/IregisterParams';
 import { Iresult } from 'interfaces/Iresult';
@@ -16,6 +17,7 @@ export {
     IapiOptions,
     IauthParams,
     IdatabaseConfig,
+    Iquery,
     IqueryResult,
     IqueueMessage,
     IregisterParams,

@@ -2,7 +2,7 @@ import { IauthParams, IregisterParams, Iresult, IqueueMessage } from 'interfaces
 
 export const validationHelper = {
     validateAuthParams: ({ username, password }: IauthParams): Iresult => {
-        let error = false;
+            let error = false;
         let message = '';
 
         if (!username) { // add regex validation

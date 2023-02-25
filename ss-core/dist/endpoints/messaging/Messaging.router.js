@@ -11,6 +11,7 @@ class MessagingRouter {
         this.controller = Messaging_controller_1.default;
         this.basePath = '/api/v1/messaging';
         this.router = (0, express_1.Router)();
+        this.configureRoutes();
     }
     configureRoutes() {
         this.router.use(helpers_1.authHelper.authenticateRequest);

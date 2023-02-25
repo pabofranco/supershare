@@ -13,7 +13,7 @@ class MessagingController {
             if (!await Messaging.createQueue(queue))
                 throw new Error(`Error while creating queue ${queue}`);
 
-            return response.status(200);
+            return response.status(200).json();
         } catch(ex) {
             const { message } = ex as Error;
             return response.status(500).json({ error: true, message });

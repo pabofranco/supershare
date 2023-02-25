@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { validationHelper } from 'helpers';
 import { Token } from 'providers';
-import { IauthParams, IqueryResult, IuserValidation } from 'interfaces';
+import { IauthParams, IuserValidation } from 'interfaces';
 import { authRepository } from './Auth.repository';
 
 class AuthController {
@@ -9,24 +9,24 @@ class AuthController {
     *  user logs in with username and password
     *  user receives auth token to be sent in every request from now on
     *  that token is valid until the user logs out
+    *
+    *   token and user id must be placed at 'authentication' and 'etags' headers, respectively
     */
     async login(request: Request, response: Response): Promise<Response> {
         try {
             // parameters validation
-            const { error, message } = validationHelper.validateAuthParams(request.body);
-            if (error) throw new Error(message);
+            const validateParams = validationHelper.validateAuthParams(request.body);
+            if (validateParams.error) throw new Error(validateParams.message);
 
             const { username, password } = request.body as IauthParams;
-            // get salt data => get userId, salt, password from username
-            // hash password and check
-            // if hash checks out, return userId and token
-            // token => authentication / userId => etags
-            const userData: IqueryResult<IuserValidation> = await authRepository.getValidationData(username);
-            if (userData.error) throw new Error(userData.data as string);
 
-            const { user_id, salt, hashed_password } = userData.data as IuserValidation;
+            const validationData = await authRepository.getValidationData(username);
+            if (validationData.error) throw new Error(validationData.message);
+
+            const { user_id, salt, hashed_password } = validationData.data as IuserValidation;
             const token = Token.generateToken();
-            if (authRepository.checkPassword(password, salt, hashed_password)
+
+            if (token && authRepository.checkPassword(password, salt, hashed_password)
                 && Token.addToken({ id: user_id, token })) {
                 return response.status(200).json({ user_id, token });
             }

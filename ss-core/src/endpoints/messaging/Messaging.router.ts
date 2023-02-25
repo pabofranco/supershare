@@ -11,6 +11,8 @@ class MessagingRouter implements Irouter {
     constructor() {
         this.basePath = '/api/v1/messaging';
         this.router = Router();
+
+        this.configureRoutes();
     }
 
     configureRoutes(): void {

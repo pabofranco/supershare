@@ -9,24 +9,35 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const crypto_1 = require("crypto");
 const helpers_1 = require("helpers");
+const providers_1 = require("providers");
+const Auth_repository_1 = require("./Auth.repository");
 class AuthController {
     /* Authentication:
     *  user logs in with username and password
     *  user receives auth token to be sent in every request from now on
     *  that token is valid until the user logs out
+    *
+    *   token and user id must be placed at 'authentication' and 'etags' headers, respectively
     */
     login(request, response) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // parameters validation
-                const { error, message } = helpers_1.validationHelper.validateAuthParams(request.body);
-                if (error)
-                    throw new Error(message);
-                // const { username, password } = request.body;
-                const token = (0, crypto_1.randomUUID)();
-                return response.status(200).json({ message, token });
+                const validateParams = helpers_1.validationHelper.validateAuthParams(request.body);
+                if (validateParams.error)
+                    throw new Error(validateParams.message);
+                const { username, password } = request.body;
+                const validationData = yield Auth_repository_1.authRepository.getValidationData(username);
+                if (validationData.error)
+                    throw new Error(validationData.message);
+                const { user_id, salt, hashed_password } = validationData.data;
+                const token = providers_1.Token.generateToken();
+                if (token && Auth_repository_1.authRepository.checkPassword(password, salt, hashed_password)
+                    && providers_1.Token.addToken({ id: user_id, token })) {
+                    return response.status(200).json({ user_id, token });
+                }
+                throw new Error('Login failed: Invalid password for username provided');
             }
             catch (ex) {
                 const { message } = ex;

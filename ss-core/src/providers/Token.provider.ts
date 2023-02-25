@@ -1,5 +1,6 @@
 import { randomUUID } from 'crypto';
 import { Itoken } from 'interfaces';
+import { Logger } from 'providers';
 
 class Token {
     private validTokens: Map<string, string>;
@@ -15,25 +16,26 @@ class Token {
     addToken(data: Itoken): boolean {
         const { id, token } = data;
 
-        if (this.validTokens.has(token)) return false;
+        if (this.validTokens.has(id)) return false;
 
-        this.validTokens.set(token, id);
+        this.validTokens.set(id, token);
+        Logger.info(`Token added: ${token} assigned to id ${id}`);
         return true;
     }
 
     removeToken(data: Itoken): boolean {
-        const { token } = data;
-        if (!this.validTokens.has(token)) return false;
+        const { id } = data;
+        if (!this.validTokens.has(id)) return false;
 
-        this.validTokens.delete(token);
+        this.validTokens.delete(id);
         return true;
     }
 
     updateToken(data: Itoken): boolean {
         const { id, token } = data;
-        if (!this.validTokens.has(token)) return false;
+        if (!this.validTokens.has(id)) return false;
 
-        this.validTokens.set(token, id);
+        this.validTokens.set(id, token);
         return true;
     }
 
@@ -42,10 +44,15 @@ class Token {
     }
 
     validateToken(data: Itoken): boolean {
-        const { id,token } = data;
-        if (!this.validTokens.has(token)) return false;
+        const { id, token } = data;
+        Logger.info(`Checking Token: ${token} for id ${id}`);
+        if (!this.validTokens.has(id)) return false;
 
-        return this.validTokens.get(token) === id;
+        return this.validTokens.get(id) === token;
+    }
+
+    getUserToken(id: string): string | null{
+        return this.validTokens.get(id) || null;
     }
 }
 

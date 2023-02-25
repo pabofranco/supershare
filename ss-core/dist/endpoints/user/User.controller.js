@@ -38,9 +38,9 @@ class UserController {
                 if (error)
                     throw new Error(message);
                 const { email, password, username } = req.body;
-                const userData = User_repository_1.createNew.user(req.body);
-                const saltData = User_repository_1.createNew.salt(userData.id);
-                const pswData = User_repository_1.createNew.password(userData.id, password, saltData.salt);
+                const userData = User_repository_1.userRepository.newUser(req.body);
+                const saltData = helpers_1.authHelper.newSalt(userData.id);
+                const pswData = helpers_1.authHelper.newPassword(userData.id, password, saltData.salt);
                 const queryData = [
                     userData.id, username, email, userData.queue,
                     saltData.id, saltData.salt, saltData.user_id,
@@ -49,11 +49,6 @@ class UserController {
                 const newUser = yield User_repository_1.userRepository.insert(queryData);
                 if (newUser.error)
                     throw new Error(newUser.message);
-                providers_1.Logger.info(newUser.message);
-                // // create user queue
-                // if (!await Messaging.createQueue(userData.queue)) {
-                //   throw new Error('Error creating queue');
-                // }
                 return res.status(200).json({ error: false, data: userData });
             }
             catch (ex) {

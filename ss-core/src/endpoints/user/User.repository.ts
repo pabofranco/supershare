@@ -2,7 +2,7 @@ import { format } from 'mysql';
 import { randomUUID } from 'crypto';
 import { userQueries } from './User.queries';
 import { Database } from 'services';
-import { IqueryResult, Iresult, Iuser, IuserSalt, IregisterParams } from 'interfaces';
+import { IqueryResult, Iresult, Iuser, IregisterParams } from 'interfaces';
 import { authHelper } from 'helpers';
 
 export const userRepository = {
@@ -94,14 +94,14 @@ export const userRepository = {
         });
     },
 
-    updateSalt: async(_: IuserSalt): Promise<Iresult> => {
-        return new Promise((resolve) => {
-            try {
-                return resolve({ message: 'Salt updated successfully' });
-            } catch(ex) {
-                const { message } = ex as Error;
-                return resolve({ error: true, message });
-            }
-        });
-    }
+    // updateSalt: async(_: IuserSalt): Promise<Iresult> => {
+    //     return new Promise((resolve) => {
+    //         try {
+    //             return resolve({ message: 'Salt updated successfully' });
+    //         } catch(ex) {
+    //             const { message } = ex as Error;
+    //             return resolve({ error: true, message });
+    //         }
+    //     });
+    // }
 };

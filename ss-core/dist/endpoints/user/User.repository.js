@@ -9,34 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userRepository = exports.createNew = void 0;
+exports.userRepository = void 0;
 const mysql_1 = require("mysql");
 const crypto_1 = require("crypto");
 const User_queries_1 = require("./User.queries");
 const services_1 = require("services");
-exports.createNew = {
-    user: (data) => {
+const helpers_1 = require("helpers");
+exports.userRepository = {
+    newUser: (data) => {
         const id = (0, crypto_1.randomUUID)();
         return Object.assign(Object.assign({}, data), { id, queue: `queue-${id}` });
     },
-    salt: (id) => {
-        return {
-            id: (0, crypto_1.randomUUID)(),
-            salt: (0, crypto_1.randomUUID)(),
-            user_id: id,
-        };
-    },
-    password: (id, password, salt) => {
-        const unhashedPsw = `${password}${salt}`;
-        const hasehdPsw = (0, crypto_1.createHash)('sha256').update(unhashedPsw).digest('hex');
-        return {
-            id: (0, crypto_1.randomUUID)(),
-            password: hasehdPsw,
-            user_id: id,
-        };
-    }
-};
-exports.userRepository = {
     list: () => __awaiter(void 0, void 0, void 0, function* () {
         return new Promise((resolve) => {
             try {
@@ -103,8 +86,8 @@ exports.userRepository = {
     updatePassword: (id, psw) => __awaiter(void 0, void 0, void 0, function* () {
         return new Promise((resolve) => {
             try {
-                const { salt } = exports.createNew.salt(id);
-                const { password } = exports.createNew.password(id, psw, salt);
+                const { salt } = helpers_1.authHelper.newSalt(id);
+                const { password } = helpers_1.authHelper.newPassword(id, psw, salt);
                 const updateQuery = (0, mysql_1.format)(User_queries_1.userQueries.UPDATE_PASSWORD, [salt, id, password, id]);
                 services_1.Database.pool().query(updateQuery, (error) => {
                     if (error)
@@ -118,16 +101,15 @@ exports.userRepository = {
             }
         });
     }),
-    updateSalt: (data) => __awaiter(void 0, void 0, void 0, function* () {
-        return new Promise((resolve) => {
-            try {
-                return resolve({ message: 'Salt updated successfully' });
-            }
-            catch (ex) {
-                const { message } = ex;
-                return resolve({ error: true, message });
-            }
-        });
-    })
+    // updateSalt: async(_: IuserSalt): Promise<Iresult> => {
+    //     return new Promise((resolve) => {
+    //         try {
+    //             return resolve({ message: 'Salt updated successfully' });
+    //         } catch(ex) {
+    //             const { message } = ex as Error;
+    //             return resolve({ error: true, message });
+    //         }
+    //     });
+    // }
 };
 //# sourceMappingURL=User.repository.js.map
