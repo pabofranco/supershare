@@ -10,15 +10,16 @@ const hashPassword = (password: string, salt: string): string => {
 };
 
 export const authHelper = {
-    authenticateRequest: (error: Error, request: Request, response: Response, next: NextFunction) => {
-        Logger.info(`\n\nRequest headers: ${JSON.stringify(request.headers)}\n\n`);
-        const { user_id, user_token } = request.headers;
-        try {
-            if (!user_token) throw new Error('Invalid token provided');
-            if (!user_id) throw new Error('Invalid id provided');
-            if (!Token.validateToken({ id: user_id as string, token: user_token as string })) throw new Error('Unauthorized');
+    authenticateRequest: (request: Request, response: Response, next: NextFunction) => {
+        const userToken = request.cookies('x-user-token');
+        const userId = request.cookies('x-user-id');
 
-            next('router');
+        try {
+            if (!userToken) throw new Error('Invalid token provided');
+            if (!userId) throw new Error('Invalid id provided');
+            if (!Token.validateToken({ id: userId, token: userToken })) throw new Error('Unauthorized');
+
+            next();
         } catch(ex) {
             const { message } = ex as Error;
             Logger.error(message);

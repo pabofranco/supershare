@@ -13,7 +13,7 @@ class MessagingController {
             if (!await Messaging.createQueue(queue))
                 throw new Error(`Error while creating queue ${queue}`);
 
-            return response.status(200).json();
+            return response.status(200).json({ message: 'Queue created successfully' });
         } catch(ex) {
             const { message } = ex as Error;
             return response.status(500).json({ error: true, message });
@@ -28,7 +28,7 @@ class MessagingController {
 
             await Messaging.removeQueue(id);
 
-            return response.status(200);
+            return response.status(200).json({ message: 'Queue removed successfully' });
         } catch(ex) {
             const { message } = ex as Error;
             return response.status(500).json({ error: true, message });
@@ -45,7 +45,7 @@ class MessagingController {
             if (!Messaging.publish(queue, data, id))
                 throw new Error(`Error publishing message ${data} from ${id} to queue: ${queue}`);
 
-            return response.status(200);
+            return response.status(200).json({ message: 'Message published successfully' });
         } catch(ex) {
             const { message } = ex as Error;
             return response.status(500).json({ error: true, message });

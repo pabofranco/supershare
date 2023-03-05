@@ -28,10 +28,35 @@ class AuthController {
 
             if (token && authRepository.checkPassword(password, salt, hashed_password)
                 && Token.addToken({ id: user_id, token })) {
+                const expireDate =  new Date(new Date().getDate() + 30);
+                response.cookie('x-user-token', token, { expires: expireDate, httpOnly: true });
+                response.cookie('x-user-id', user_id, { expires: expireDate, httpOnly: true });
+
                 return response.status(200).json({ user_id, token });
             }
 
             throw new Error('Login failed: Invalid password for username provided');
+        } catch (ex) {
+            const { message } = ex as Error;
+            return response.status(500).json({ error: true, message });
+        }
+    }
+
+    async logout(request: Request, response: Response): Promise<Response> {
+        try {
+            const userToken = request.cookies('x-user-token');
+            const userId = request.cookies('x-user-id');
+
+            if (!userToken) throw new Error('Invalid user token provided.');
+            if (!userId) throw new Error('Invalid user id provided.');
+
+            if (Token.removeToken({ id: userId, token: userToken })) {
+                response.clearCookie('x-user-token');
+                response.clearCookie('x-user-id');
+                return response.status(200).json({ message: 'User logged out successfully' });
+            }
+
+            throw new Error('Logout failed: Unable to remove token from system.');
         } catch (ex) {
             const { message } = ex as Error;
             return response.status(500).json({ error: true, message });

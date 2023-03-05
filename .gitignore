@@ -1,4 +1,5 @@
 ss-core/node_modules/
+ss-core/dist/
 ss-front/node_modules/
 ss-front/build/
 .docker/rabbitmq/.erlang.cookie
